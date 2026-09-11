@@ -1,24 +1,54 @@
 package com.ai4dev.tinder4dogs.match
 
 import com.ai4dev.tinder4dogs.dog.Dog
+import kotlin.math.abs
 import org.springframework.stereotype.Service
 
+/**
+ * Scores how well two dogs match, on a scale from 0.0 to 1.0.
+ *
+ * Four things contribute, and each one is capped, which is what keeps the
+ * result inside the scale it claims to be on:
+ *
+ *  - closeness in age, worth at most [AGE_MAX_POINTS]
+ *  - the same breed, worth [BREED_POINTS]
+ *  - opposite genders, worth [GENDER_POINTS]
+ *  - shared preferences, worth [POINTS_PER_PREFERENCE] each, at most
+ *    [PREFERENCE_MAX_POINTS] in total
+ */
 @Service
 class MatchScoreService {
 
     fun score(a: Dog, b: Dog): Double {
-        var score = 0.0
+        require(a.age >= 0) { "age cannot be negative: ${a.name} is ${a.age}" }
+        require(b.age >= 0) { "age cannot be negative: ${b.name} is ${b.age}" }
 
-        val ageGap = a.age - b.age
-        score += (10 - ageGap) * 2.0
+        var points = agePoints(a.age, b.age)
+        if (a.breed == b.breed) points += BREED_POINTS
+        if (a.gender != b.gender) points += GENDER_POINTS
+        points += preferencePoints(a, b)
 
-        if (a.breed == b.breed) score + 25.0
+        return (points / MAX_POINTS).coerceIn(0.0, 1.0)
+    }
 
-        if (a.gender != b.gender) score += 20.0
+    /** Full marks at the same age, nothing from ten years apart onwards. */
+    private fun agePoints(ageA: Int, ageB: Int): Double =
+        ((MAX_AGE_GAP - abs(ageA - ageB)) * 2.0).coerceAtLeast(0.0)
 
+    private fun preferencePoints(a: Dog, b: Dog): Double {
         val shared = a.preferences.count { b.preferences.contains(it) }
-        score += shared * 5
+        return (shared * POINTS_PER_PREFERENCE).coerceAtMost(PREFERENCE_MAX_POINTS)
+    }
 
-        return score / 100
+    private companion object {
+        const val MAX_AGE_GAP = 10
+        const val AGE_MAX_POINTS = 20.0
+        const val BREED_POINTS = 25.0
+        const val GENDER_POINTS = 20.0
+        const val POINTS_PER_PREFERENCE = 5.0
+        const val PREFERENCE_MAX_POINTS = 15.0
+
+        const val MAX_POINTS =
+            AGE_MAX_POINTS + BREED_POINTS + GENDER_POINTS + PREFERENCE_MAX_POINTS
     }
 }
