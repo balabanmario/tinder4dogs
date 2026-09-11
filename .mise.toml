@@ -1,0 +1,32 @@
+# Tool versions and project tasks for tinder4dogs.
+#
+# Everything here is true of THIS codebase: the toolchain it needs and the
+# commands that build, test and run it. Nothing personal belongs in this file.
+
+[tools]
+java = "temurin-25"
+maven = "3.9.11"
+
+[tasks.build]
+description = "Compile and package the application"
+run = "mvn -q clean package"
+
+[tasks.test]
+description = "Run the test suite"
+run = "mvn -q test"
+
+[tasks.run]
+description = "Start the application (needs the database: mise run db)"
+run = "mvn -q spring-boot:run"
+
+[tasks.db]
+description = "Start the application's own PostgreSQL"
+run = "docker compose up -d"
+
+[tasks."db:stop"]
+description = "Stop the database"
+run = "docker compose down"
+
+[tasks.format]
+description = "Format Kotlin sources"
+run = "mvn -q spotless:apply"

@@ -1,0 +1,29 @@
+# This file looks like infrastructure and it is not.
+# It starts the database this application owns. Without it the application
+# does not run, on any machine, in any context. That is what makes it part
+# of the product.
+
+services:
+  postgres:
+    image: postgres:18-alpine
+    container_name: tinder4dogs-db
+    environment:
+      POSTGRES_DB: tinder4dogs
+      POSTGRES_USER: tinder4dogs
+      POSTGRES_PASSWORD: tinder4dogs
+    ports:
+      - "5432:5432"
+    volumes:
+      # PostgreSQL 18 images keep their data in a version-specific subdirectory
+      # and expect a SINGLE mount here, at /var/lib/postgresql. Mounting at
+      # /var/lib/postgresql/data instead — which is what nearly every example
+      # written before 18 still says — makes the container refuse to start.
+      - tinder4dogs-data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tinder4dogs -d tinder4dogs"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  tinder4dogs-data:

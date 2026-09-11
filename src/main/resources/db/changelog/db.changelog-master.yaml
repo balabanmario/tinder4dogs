@@ -1,0 +1,14 @@
+# The index. Every changeset itself is plain SQL, in the files below.
+#
+# This file stays YAML because Liquibase's formatted-SQL format has no include
+# directive: a changelog written in SQL cannot point at another changelog. So
+# the index is YAML and the migrations are SQL, which is the split most teams
+# end up with.
+#
+# Append, never edit. A changeset that has run anywhere is immutable; changing
+# it changes its checksum and Liquibase refuses to start.
+
+databaseChangeLog:
+  - include:
+      file: db/changelog/changes/001-create-dog.sql
+      relativeToChangelogFile: false

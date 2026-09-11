@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: tinder4dogs
+
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/tinder4dogs}
+    username: ${DATABASE_USER:tinder4dogs}
+    password: ${DATABASE_PASSWORD:tinder4dogs}
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+
+server:
+  port: 8080
+
+logging:
+  level:
+    com.ai4dev.tinder4dogs: INFO
