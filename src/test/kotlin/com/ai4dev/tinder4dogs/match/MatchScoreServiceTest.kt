@@ -106,4 +106,16 @@ class MatchScoreServiceTest {
             .isInstanceOf(IllegalArgumentException::class.java)
             .hasMessageContaining("age cannot be negative")
     }
+
+    // ── Module 4: the question a caller has to ask before it asks for a score ──
+
+    @Test
+    fun `a dog with a negative age cannot be scored`() {
+        assertThat(service.canScore(dog("Nonna", age = -3))).isFalse()
+    }
+
+    @Test
+    fun `a dog with a plausible age can be scored`() {
+        assertThat(service.canScore(rex)).isTrue()
+    }
 }

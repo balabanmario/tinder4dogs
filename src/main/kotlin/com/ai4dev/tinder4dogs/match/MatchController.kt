@@ -26,8 +26,14 @@ class MatchController(
         val subject = dogs.findById(id).orElse(null)
             ?: return ResponseEntity.notFound().build()
 
+        // The subject is the one dog that cannot be skipped. If its own row is
+        // impossible there is no partial answer to give, so say so instead of
+        // failing: the request is well formed, the stored data is not.
+        if (!scores.canScore(subject)) return ResponseEntity.unprocessableEntity().build()
+
         val ranked = dogs.findAll()
             .filter { it.id != subject.id }
+            .filter { scores.canScore(it) }
             .map { candidate -> toResponse(candidate, scores.score(subject, candidate)) }
             .sortedByDescending { it.score }
 
@@ -38,6 +44,14 @@ class MatchController(
     fun between(@PathVariable aId: Long, @PathVariable bId: Long): ResponseEntity<MatchResponse> {
         val a = dogs.findById(aId).orElse(null) ?: return ResponseEntity.notFound().build()
         val b = dogs.findById(bId).orElse(null) ?: return ResponseEntity.notFound().build()
+
+        // The same rule, on the endpoint nobody remembers to check. Here there
+        // is nothing to filter: either both dogs are scorable or the question
+        // has no answer.
+        if (!scores.canScore(a) || !scores.canScore(b)) {
+            return ResponseEntity.unprocessableEntity().build()
+        }
+
         return ResponseEntity.ok(toResponse(b, scores.score(a, b)))
     }
 

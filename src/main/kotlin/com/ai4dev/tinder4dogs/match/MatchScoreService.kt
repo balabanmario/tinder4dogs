@@ -31,6 +31,17 @@ class MatchScoreService {
         return (points / MAX_POINTS).coerceIn(0.0, 1.0)
     }
 
+    /**
+     * Whether this dog can be scored at all.
+     *
+     * [score] refuses a negative age, and it is right to: a negative age is not
+     * a poor match, it is a row that should not exist. But a caller that reads
+     * many dogs has to be able to ask the question *before* it asks for the
+     * score. Without this, one impossible row takes the whole answer down with
+     * it, which is exactly what `GET /api/matches/{id}` used to do.
+     */
+    fun canScore(dog: Dog): Boolean = dog.age >= 0
+
     /** Full marks at the same age, nothing from ten years apart onwards. */
     private fun agePoints(ageA: Int, ageB: Int): Double =
         ((MAX_AGE_GAP - abs(ageA - ageB)) * 2.0).coerceAtLeast(0.0)
