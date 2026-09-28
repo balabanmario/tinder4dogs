@@ -101,3 +101,18 @@
   - Both project tasks complete successfully after the implementation and all profile regression tests remain green.
   - _Boundary: Integration validation_
   - _Requirements: 1.1, 2.3, 3.3, 4.1, 5.4_
+
+## Implementation Notes
+
+- Use `mise run test` / `mise run build`, never bare `mvn`: the default JDK on
+  the machine is older than the toolchain mise pins, and surefire fails with
+  "class file version 69.0" before any test runs.
+- Maven is offline here. Do not reach for a library that is not already on the
+  classpath — `spring-data-commons` resolves `PartTree` but not `PropertyPath`.
+- `Dog.sex` carries the gender semantics `match` scores on, exposed as a
+  `gender` alias plus a `gender`-named secondary constructor. `gender` has no
+  default so it disambiguates from the all-default primary constructor. The
+  `match` package and its tests are untouched; keep it that way.
+- Any Hibernate `MetadataSources` test must register every entity Dog
+  associates with (now `DogPhoto`), or boot fails with "does not belong to the
+  same persistence unit".
