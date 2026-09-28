@@ -1,6 +1,6 @@
 # Implementation Plan
 
-- [ ] 1. Foundation: add the profile and binary-photo persistence schema
+- [x] 1. Foundation: add the profile and binary-photo persistence schema
 - [x] 1.1 Create an append-only Liquibase migration for dog profiles and photos
   - Add reusable owner identity, profile attributes, optional mating declarations, completeness metadata, and compatibility-safe defaults for existing dog rows.
   - Add the binary photo table with profile ownership, metadata, ordering, cascade deletion, and a unique owner constraint.
@@ -9,7 +9,7 @@
   - _Boundary: Database schema_
   - _Requirements: 1.1, 1.2, 1.4, 2.1, 3.3, 4.1, 5.4_
 
-- [ ] 2. Core persistence model: represent profile data and photo ownership
+- [x] 2. Core persistence model: represent profile data and photo ownership
 - [x] 2.1 Expand the dog profile persistence model
   - Add the reusable UUID owner identifier and physical, behavioral, and optional mating fields while preserving `name`, `preferences`, and the match-compatible gender surface so the `match` package requires no change.
   - Represent self-declared mating information without a verified status.
