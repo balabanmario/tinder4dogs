@@ -10,7 +10,7 @@
   - _Requirements: 1.1, 1.2, 1.4, 2.1, 3.3, 4.1, 5.4_
 
 - [ ] 2. Core persistence model: represent profile data and photo ownership
-- [ ] 2.1 Expand the dog profile persistence model
+- [x] 2.1 Expand the dog profile persistence model
   - Add the reusable UUID owner identifier and physical, behavioral, and optional mating fields while preserving `name`, `preferences`, and the match-compatible gender surface so the `match` package requires no change.
   - Represent self-declared mating information without a verified status.
   - Map the new `sex` field onto the existing gender semantics so existing scoring reads continue to work without editing `match` code.

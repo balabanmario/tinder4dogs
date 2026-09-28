@@ -65,7 +65,7 @@ class DogController(
         val dog = Dog(
             name = request.name,
             breed = request.breed,
-            gender = request.gender,
+            sex = request.gender,
             age = request.age,
             preferences = request.preferences.toMutableSet(),
         )
