@@ -1,5 +1,6 @@
 package com.ai4dev.tinder4dogs.dog
 
+import jakarta.persistence.CascadeType
 import jakarta.persistence.CollectionTable
 import jakarta.persistence.Column
 import jakarta.persistence.ElementCollection
@@ -11,6 +12,8 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
+import jakarta.persistence.OneToMany
+import jakarta.persistence.OrderBy
 import jakarta.persistence.Table
 import java.time.Instant
 import java.util.UUID
@@ -86,6 +89,22 @@ class Dog(
     )
     @Column(name = "preference", nullable = false)
     var preferences: MutableSet<String> = mutableSetOf(),
+
+    /**
+     * The dog's photos, owned here and deleted with the profile.
+     *
+     * Lazy by design: a profile read must not pull photo rows, and the binary
+     * content is fetched only through the photo endpoint. Map it inside the
+     * transaction rather than re-enabling open-in-view.
+     */
+    @OneToMany(
+        fetch = FetchType.LAZY,
+        cascade = [CascadeType.ALL],
+        orphanRemoval = true,
+    )
+    @JoinColumn(name = "dog_id")
+    @OrderBy("sortOrder")
+    var photos: MutableList<DogPhoto> = mutableListOf(),
 ) {
     /**
      * The gender-based name the `match` package scores on.

@@ -19,7 +19,7 @@
   - _Depends: 1.1_
   - _Requirements: 1.1, 1.4, 2.1, 2.3, 2.4, 4.1, 4.2, 4.3, 4.4, 5.1, 5.3_
 
-- [ ] 2.2 Add profile and photo persistence queries
+- [x] 2.2 Add profile and photo persistence queries
   - Add owner lookup required to detect an existing profile before creation.
   - Add a binary photo entity, the one-to-many photo association on `Dog`, and persistence operations scoped by both dog id and photo id.
   - Keep photo binary content out of ordinary profile loading and response mapping.

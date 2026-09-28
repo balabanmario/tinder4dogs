@@ -29,6 +29,7 @@ class DogPersistenceMappingTest {
         try {
             val metadata = MetadataSources(registry)
                 .addAnnotatedClass(Dog::class.java)
+                .addAnnotatedClass(DogPhoto::class.java)
                 .buildMetadata()
             val dogMapping = metadata.getEntityBinding(Dog::class.java.name)
             val mappedColumnsByProperty = dogMapping.propertyClosure.associate { property ->
